@@ -6,6 +6,7 @@ export default function Weather() {
     const [city, setCity] = useState('');
     const [weatherData, setWeatherData] = useState({});
     const [weatherIconCode, setWeatherIconCode] = useState('');
+    const [forecastIcons, setForecastIcons] = useState([]);
 
 
     const APIkey = "a202f8f680d642694eea46e96ad50d30";
@@ -25,6 +26,9 @@ export default function Weather() {
             } else {
                 setWeatherIconCode('');
             }
+            // Set the weather icon codes for the 5-day forecast
+            const icons = data.list.map(item => item.weather[0].icon);
+            setForecastIcons(icons);
 
         } catch (error) {
             console.error(error);
@@ -41,6 +45,10 @@ export default function Weather() {
         console.log(weatherData); // Log the fetched data to the console
     }, [weatherData]);
 
+    useEffect(() => {
+        console.log(forecastIcons); // Log the forecastIcons array to the console
+      }, [forecastIcons]);
+
     return (
         <section className='section'>
             <form className='formAlignment' onSubmit={handleSearch}>
@@ -53,6 +61,10 @@ export default function Weather() {
                     />
                     <button type="submit">Search</button>
                 </form>
+
+            <div className='foreCastHeader'>
+                <h1 className='foreCastTitle'>CURRENT WEATHER</h1>
+            </div>
 
             <div className="currentWeatherContainer">
                 <div id="current-weather-container">
@@ -90,11 +102,20 @@ export default function Weather() {
                                 // every 8th item in an array is one day.
                                 index % 8 === 0 && (
                                     <div key={index} className='forecastCard'>
-                                        <h2>{weatherData.city && weatherData.city.name}</h2>
+                                        <h2>{item.main.temp}</h2>
+                                        
+                                        {/* Display the weather icon for each day in the 5-day forecast */}
+                                        {index % 8 === 0 && weatherData.list[index].weather &&  (
+                                            <img 
+                                                src={`https://openweathermap.org/img/w/${weatherData.list[index].weather[0].icon}.png`}
+                                                alt='Weather Icon'
+                                                
+                                            />
+                                        )}
+
                                         <ol className='forecastContainerFormat'>
                                             <li> {format(new Date(item.dt_txt), "MMMM, EEEE, do, yyyy")}</li>
                                             <li>{item.weather[0].description}</li>
-                                            <li>{item.main.temp}</li>
                                             <li>{item.wind.speed}</li>
                                             <li>{item.main.humidity}</li>   
                                         </ol>
@@ -111,50 +132,4 @@ export default function Weather() {
     
     );
 }
-
-
-
-
-
-
-
-
-// export default function Weather() {
-
-//     const [city, setCity] = useState('');
-//     const [country, setCountry] = useState('');
-//     const [weather, setWeather] = useState({});
-//     const [description, setDescription] = useState('');
-//     const [temp, setTemp] = useState('');
-//     const [humidity, setHumidity] = useState('');
-//     const [wind, setWind] = useState('');
-//     const [pressure, setPressure] = useState('');
-//     const [visibility, setVisibility] = useState('');
-//     const [sunrise, setSunrise] = useState('');
-
-//     const getWeather = async (e) => {
-//         const APIkey = "a202f8f680d642694eea46e96ad50d30";
-
-//         e.preventDefault();
-//         const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${APIkey}`);
-//         const response = await api_call.json();
-//         console.log(response);
-//         setWeather(response);
-//         setDescription(response.weather[0].description);
-//         setTemp(response.main.temp);
-//         setHumidity(response.main.humidity);
-//         setWind(response.wind.speed);
-//         setPressure(response.main.pressure);
-//         setVisibility(response.visibility);
-//         setSunrise(response.sys.sunrise);
-//     }
-
-//     useEffect(() => {
-//         getWeather();
-//     }, []);
-
-    
-
-// }
-
 
