@@ -17,15 +17,18 @@ export default function Weather() {
 
         try {
             const response = await fetch(APIurl);
+
             const data = await response.json();
             console.log(data); // Log the fetched data to the console
             setWeatherData(data);
+
             // Set the weather icon code for the current day
             if (data && data.list && data.list.length > 0) {
                 setWeatherIconCode(data.list[0].weather[0].icon);
             } else {
                 setWeatherIconCode('');
             }
+
             // Set the weather icon codes for the 5-day forecast
             const icons = data.list.map(item => item.weather[0].icon);
             setForecastIcons(icons);
@@ -51,6 +54,7 @@ export default function Weather() {
 
     return (
         <section className='section'>
+
             <form className='formAlignment' onSubmit={handleSearch}>
                     <input
                         className='searchBar'
@@ -60,7 +64,7 @@ export default function Weather() {
                         placeholder="Enter city name"
                     />
                     <button type="submit">Search</button>
-                </form>
+            </form>
 
             <div className='foreCastHeader'>
                 <h1 className='foreCastTitle'>CURRENT WEATHER</h1>
@@ -97,8 +101,7 @@ export default function Weather() {
 
                 <div className='forecastOuterContainer'>
                     <form className='formGrid'>
-                        {weatherData.list &&
-                            weatherData.list.map((item, index) => (
+                        {weatherData.list && weatherData.list.map((item, index) => (
                                 // every 8th item in an array is one day.
                                 index % 8 === 0 && (
                                     <div key={index} className='forecastCard'>
@@ -109,7 +112,6 @@ export default function Weather() {
                                             <img 
                                                 src={`https://openweathermap.org/img/w/${weatherData.list[index].weather[0].icon}.png`}
                                                 alt='Weather Icon'
-                                                
                                             />
                                         )}
 
@@ -119,6 +121,7 @@ export default function Weather() {
                                             <li>{item.wind.speed}</li>
                                             <li>{item.main.humidity}</li>   
                                         </ol>
+
                                     </div>
                                 )
                             ))}
